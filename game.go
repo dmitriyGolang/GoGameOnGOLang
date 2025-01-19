@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"main/ai"
+
+	"github.com/dmitriyGolang/GoGameOnGOLang/ai"
+	"github.com/dmitriyGolang/GoGameOnGOLang/board"
 )
 
 type Game struct {
-	board         *Board
+	board         *board.Board
 	blackScore    int
 	whiteScore    int
 	currentPlayer string
@@ -15,7 +17,7 @@ type Game struct {
 
 func NewGame(size, mode int) *Game {
 	return &Game{
-		board:         NewBoard(size),
+		board:         board.NewBoard(size),
 		currentPlayer: "B",
 		mode:          mode,
 	}
@@ -34,7 +36,7 @@ func (g *Game) Play() {
 			if g.mode == 1 {
 				move = ai.RandomMove(g.board)
 			} else if g.mode == 2 {
-				move = ai.MonteCarloMove(g.board, "W")
+				move = ai.MonteCarloMove(g.board, "W", 1000) // magic number for monteshmiga
 			}
 			fmt.Printf("Компьютер делает ход: %s\n", move)
 		}

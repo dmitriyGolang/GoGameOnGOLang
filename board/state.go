@@ -1,4 +1,4 @@
-package main
+package board
 
 // стейт
 import (
@@ -120,6 +120,30 @@ func (b *Board) isCapturedChain(row, col int, player string, visited [][]bool) (
 	}
 
 	return captured, chain
+}
+
+func (b *Board) Size() int {
+	return b.size
+}
+
+func (b *Board) GetCell(row, col int) (string, error) {
+	if row < 0 || row >= b.size || col < 0 || col >= b.size {
+		return "", errors.New("координаты больше чем размер доски")
+	}
+	return b.grid[row][col], nil
+}
+
+func (b *Board) Copy() Board {
+	newGrid := make([][]string, b.size)
+	for i := range b.grid {
+		newGrid[i] = make([]string, b.size)
+		copy(newGrid[i], b.grid[i])
+
+	}
+	return Board{
+		size: b.size,
+		grid: newGrid,
+	}
 }
 
 func (b *Board) IsFull() bool {

@@ -1,11 +1,12 @@
 package ai
 
 import (
-	"gogame/main"
 	"math/rand"
+
+	"github.com/dmitriyGolang/GoGameOnGOLang/board"
 )
 
-func MonteCarloMove(board *main.Board, player string, simulations int) string {
+func MonteCarloMove(board *board.Board, player string, simulations int) string {
 	availableMoves := getAvailableMoves(board)
 	bestMove := ""
 	bestWinRate := -1.0
@@ -17,7 +18,7 @@ func MonteCarloMove(board *main.Board, player string, simulations int) string {
 			boardCopy := board.Copy()
 			boardCopy.ApplyMove(move, player)
 
-			if simulateRandomGame(boardCopy, switchPlayer(player)) == player {
+			if simulateRandomGame(&boardCopy, switchPlayer(player)) == player {
 				winCount++
 			}
 		}
@@ -32,7 +33,7 @@ func MonteCarloMove(board *main.Board, player string, simulations int) string {
 	return bestMove
 }
 
-func simulateRandomGame(board *main.Board, currentPlayer string) string {
+func simulateRandomGame(board *board.Board, currentPlayer string) string {
 	for !board.IsFull() {
 		availableMoves := getAvailableMoves(board)
 		if len(availableMoves) == 0 {
@@ -52,11 +53,15 @@ func simulateRandomGame(board *main.Board, currentPlayer string) string {
 	return "" // Ничья
 }
 
-func getAvailableMoves(board *main.Board) []string {
+func getAvailableMoves(board *board.Board) []string {
 	var moves []string
 	for i := 0; i < board.Size(); i++ {
 		for j := 0; j < board.Size(); j++ {
-			if board.GetCell(i, j) == "." {
+			cellValue, err := board.GetCell(i, j)
+			if err != nil {
+				return nil
+			}
+			if cellValue == "." {
 				moves = append(moves, string('A'+j)+string('1'+i))
 			}
 		}
